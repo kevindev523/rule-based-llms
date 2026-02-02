@@ -1,176 +1,213 @@
-# Rule-based LLMs
+# Rule-based LLMs | AI Chatbot with IBM Decision Services
 
-This project demonstrates the integration of Large Language Models (LLMs) with a rule engine.
+**Integrate Large Language Models (LLMs) with rule engines for accurate, policy-driven customer support and HR automation.** This open-source project demonstrates a chatbot that combines LLM intelligence with IBM Operational Decision Manager (ODM) and IBM Automation Decision Services (ADS) for reliable, rule-based answers.
 
-For an in-depth understanding, refer to [this presentation](<doc/Rule-based LLMs Presentation.pptx>) and [this video](<doc/Rule-based LLMs Video.mp4>).
+---
 
-This solution features a chatbot powered by an LLM that interacts with rule-based Decision Services. 
+## Table of Contents
 
-When a user's question can be resolved through an existing Decision Service, the LLM provides the necessary parameters to call the service and uses the result to answer the query.
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [Prerequisites](#prerequisites)
+- [Setup & Running the Demo](#setup--running-the-demo)
+- [Using the Chatbot](#using-the-chatbot)
+- [Extending the Demo](#extending-the-demo)
+- [FAQ](#faq)
+- [Author & Contact](#author--contact)
+- [License](#license)
 
+---
 
-<img src="doc/architecture.png" width="600px" heigh="400px" />
+## Overview
 
-We are using [IBM Operational Decision Manager](https://www.ibm.com/products/operational-decision-manager) and [IBM Automation Decision Services](https://www.ibm.com/products/automation-decision-services) to demonstrate rule-based decision services.
+**Rule-based LLMs** is a demonstration project that shows how to integrate **Large Language Models (LLMs)** with **rule-based decision services**. The solution features a web chatbot powered by an LLM (via Ollama or IBM Watsonx.ai) that can:
 
+- Answer questions using **LLM-only mode** (optionally with RAG over policy documents).
+- Answer questions using **Decision Services mode**, where the LLM calls IBM ODM or IBM ADS to get accurate, rule-compliant results.
 
-### Sub-projects:
-- **rule-agent**: A Python-based implementation of the chatbot backend using Langchain.
-- **decision-services**: A collection of sample IBM ODM and IBM ADS decision services.
-- **chatbot-frontend**: A React-based web application that interfaces with the chatbot backend.
+When a user question can be resolved by an existing Decision Service, the LLM extracts parameters, calls the service, and uses the result to formulate the reply—ensuring **accuracy** where business rules matter (e.g., vacation days, HR policies).
 
-See dedicated READMEs in all sub-projects
+For a deeper dive, see the [presentation](doc/Rule-based%20LLMs%20Presentation.pptx) and [video](doc/Rule-based%20LLMs%20Video.mp4).
 
-# Running the Demo Application
+---
 
-A demo application (HR Service) showcases the system’s capabilities. Follow the instructions below to run the demo and explore the integration.
+## Features
 
-<img src="doc/demo_hr.gif"  />
+- **Dual LLM backends**: Run with [Ollama](https://ollama.com/) (local) or [IBM Watsonx.ai](https://www.ibm.com/watsonx) (cloud).
+- **Rule-based decision services**: IBM [Operational Decision Manager (ODM)](https://www.ibm.com/products/operational-decision-manager) and [Automation Decision Services (ADS)](https://www.ibm.com/products/automation-decision-services).
+- **HR Service demo**: Pre-packaged example (vacation days, time-off rules) with correct rule execution.
+- **Docker-based setup**: Single `docker-compose` flow for ODM, backend, and frontend.
+- **LangChain-based backend**: Python rule-agent using LangChain for tool use and LLM orchestration.
+- **React + Vite frontend**: Modern chatbot UI (Carbon Design, TypeScript).
+
+---
+
+## Architecture
+
+<img src="doc/architecture.png" width="600" height="400" alt="Rule-based LLMs architecture: Chatbot, LLM, Decision Services" />
+
+The chatbot frontend talks to a Python backend (rule-agent). The backend uses an LLM to understand the user query and, in Decision Services mode, invokes IBM ODM or ADS. Results are combined and returned to the user.
+
+**Sub-projects:**
+
+| Component | Description |
+|-----------|-------------|
+| **rule-agent** | Python backend (LangChain, Flask). Orchestrates LLM and decision service calls. |
+| **decision-services** | Sample IBM ODM and IBM ADS decision services (e.g., HR time-off rules). |
+| **chatbot-frontend** | React + TypeScript + Vite web app for the chat interface. |
+
+See the READMEs inside each sub-project for details.
+
+---
+
+## Quick Start
+
+1. **Prerequisites**: Docker (e.g. [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation)), `git`, and an LLM environment (Ollama or Watsonx—see [Setup](#setting-up-your-environment-for-the-demonstration)).
+2. **Clone** the repository and go to the project root.
+3. **Configure LLM**: Follow [Running with Ollama (Local)](README_LOCAL.md) or [Running with Watsonx.ai (Cloud)](README_WASTONX.md).
+4. **Build and run**:
+   ```bash
+   docker login
+   docker-compose build
+   docker-compose up
+   ```
+5. **Open** [http://localhost:8080](http://localhost:8080) and use the chatbot.
 
 ---
 
 ## Prerequisites
 
-Ensure your system meets the requirements and all dependencies are installed. 
+- **Docker** — [Rancher Desktop on macOS](https://docs.rancherdesktop.io/getting-started/installation) or [Rancher Desktop on Windows](https://docs.rancherdesktop.io/getting-started/installation#windows). Docker Compose is included.
+- **Git**
+- **LLM setup**: Either [Ollama](https://ollama.com/) (local) or [IBM Watsonx.ai](https://www.ibm.com/watsonx) (cloud).
 
-This demo has been successfully tested on MacOS M1 and Windows 11 using Rancher Desktop. We strongly recommend using these configurations.
+This demo has been tested on **macOS (M1)** and **Windows 11** with Rancher Desktop.
 
-- **Docker**
-  - [Install Rancher Desktop on macOS](https://docs.rancherdesktop.io/getting-started/installation#windows)
-  - [Install Rancher Desktop on Windows](https://docs.rancherdesktop.io/getting-started/installation#windows)
-- **docker-compose**: Installed automatically with Rancher Desktop.
-- **git**
+### Windows with Rancher
+
+1. Enable [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install).
+2. In Rancher Desktop, set the container runtime to use WSL:
+
+<img src="doc/wsl.png" width="600" height="400" alt="Rancher Desktop WSL configuration" />
 
 ---
 
-### Setup Instructions for Windows OS with Rancher
+## Setup & Running the Demo
 
-1. To run the demonstration on Windows, you'll need to enable [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/fr-fr/windows/wsl/install).
-2. Once WSL is enabled, configure Rancher Desktop to support it:
+### Setting up your environment for the demonstration
 
-<img src="doc/wsl.png" width="600px" heigh="400px" />
+Choose one LLM option and follow the matching guide:
 
+1. **[Running with Ollama (Local)](README_LOCAL.md)** — LLM runs on your machine.
+2. **[Running with Watsonx.ai (Cloud)](README_WASTONX.md)** — Use IBM Watsonx.ai in the cloud.
 
-## Setting up your environement for the demonstration
+### Launch the Docker topology
 
-You can run this demonstration using two different LLM configurations and depending on your setup, follow the respective guide below:
+1. **Open a terminal**  
+   - Windows: run `wsl` if using WSL.  
+   - macOS/Linux: use your usual terminal.
 
-1. [Running with Ollama (Local)](README_LOCAL.md) using [Ollama](https://ollama.com/), where the LLM runs directly on your machine.
-2. [Running with Watsonx.ai (Cloud)](README_WASTONX.md) using [Watsonx.ai](https://www.ibm.com/watsonx), accessing IBM's AI models in the cloud.
+2. **Log in to Docker** (avoids rate limits when pulling images):
+   ```bash
+   docker login
+   ```
+   Create a Docker account at [hub.docker.com](https://hub.docker.com/signup) if needed.
 
+3. **Build the demo**
+   ```bash
+   docker-compose build
+   ```
 
+4. **Run the demo**
+   ```bash
+   docker-compose up
+   ```
+   This starts IBM ODM (for Developers) and the sample web application.
 
-### Launch the docker topology
+5. Wait until you see `* Running on all addresses (0.0.0.0)` (or the backend is ready).
 
-1. **Open a New Terminal**  
-   - On **Windows**: Open a Command Prompt and run the `wsl` command to start the Windows Subsystem for Linux (if applicable).  
-   - On **macOS/Linux**: Open a terminal.  
+6. Use the app at [http://localhost:8080](http://localhost:8080). See [Using the Chatbot](#using-the-chatbot).
 
-2. **Log In to Docker**  
-   - To access Docker images, ensure you are logged in to Docker. Run the following command in your terminal:  
-     ```bash
-     docker login
-     ```  
-   - If you do not have a Docker account, you will need to [create one here](https://hub.docker.com/signup).  
+**Using an existing ODM instance:** Set these environment variables and adjust `docker-compose.yml` as needed:
 
-> Why is this necessary?
->   Docker enforces download rate limits for unauthenticated users. Logging in ensures you can pull images without interruptions caused by these limits, which is especially important for this demonstration.
-   
-3. **Build the docker demonstration**
-```shell
-docker-compose build
-```
-Once the build process completes
-
-4. **Run the demonstration**
-```shell
-docker-compose up
-```
-This will run the ODM for Developpers docker images in conjonction with the sample web application.
-Wait
-
-5. Wait a few minutes until you see the message `` * Running on all addresses (0.0.0.0)```
-6. Now that the demo is set up, you're ready to use it. For further instructions on how to interact with the demo, please refer to the next step [Usage Guide](#using-the-chatbot-ui).
-
-> Notes: 
-> If you are already running ODM somewhere, you need to set-up the following environment variables:
->```sh
-> export ODM_SERVER_URL=<ODM Runtime URL>
-> export ODM_USERNAME=<ODM user, default odmAdmin>
-> export ODM_PASSWORD=<ODM user password, default odmAdmin>
-> ```
-> And change the docker-compose.yml file accordingly. 
-
-
-> If you want to run this demonstration with ADS instead of Operation Decision Manager see this [documentation](README_ADS.md)
-
-
-
-### Demo Walkthrough: Chatbot and Rule-based Decision Services
-
-Once the Docker setup is complete, access the chatbot web application at [http://localhost:8080](http://localhost:8080). 
-
-In this chatbot, you can ask questions that will be answered by combining the capabilities of the underlying LLM and the rule-based decision services. 
-
-The chatbot can answer questions in two modes:
-- **LLM-only**: The answer is generated purely by the LLM, possibly augmented with policy documents via Retrieval-Augmented Generation (RAG).
-- **Decision Services mode**: If you activate the "Use Decision Services" toggle, the chatbot will query registered Decision Services instead of relying on policy documents.
-
-#### Demo Scenario: HR Service Example
-
-With the pre-packaged HR Service application, you can ask the following example question:
-
-```
-John Doe is an Acme Corp employee who was hired on November 1st, 1999. How many vacation days is John Doe entitled to each year?
+```bash
+export ODM_SERVER_URL=<ODM Runtime URL>
+export ODM_USERNAME=<ODM user, default odmAdmin>
+export ODM_PASSWORD=<ODM user password>
 ```
 
-In **LLM-only mode** (augmented with the policy document), the response might look like this:
+**Using ADS instead of ODM:** See [README_ADS.md](README_ADS.md).
+
+---
+
+## Using the Chatbot
+
+**URL:** [http://localhost:8080](http://localhost:8080)
+
+**Modes:**
+
+- **LLM-only**: Answers from the LLM, optionally augmented with policy documents (RAG).
+- **Decision Services**: Turn on the “Use Decision Services” toggle so the chatbot calls registered Decision Services for rule-based answers.
+
+### Demo scenario: HR Service example
+
+Pre-packaged HR Service answers questions like:
 
 ```
-Based on the context provided, John Doe, being an Acme Corp employee with less than 10 years of service, is entitled to three weeks of vacation per year.
+John Doe is an Acme Corp employee who was hired on November 1st, 1999. How many vacation days is John Doe entitled to per year?
 ```
 
-Note that this answer is **incorrect**. The business policies have not been interpreted accurately by the LLM.
+- **LLM-only (with policy doc):** May give an incorrect answer (e.g., “three weeks”) because the LLM misinterprets the policy.
+- **Decision Services mode:** The rule engine returns the **correct** result (e.g., 43 days), as defined in the decision service.
 
-When switching to **Decision Services mode**, the chatbot uses the rule-based decision service to generate the response. The correct answer would be:
+<img src="doc/demo_hr.gif" alt="Rule-based LLMs HR demo chatbot in action" />
 
-```
-John Doe, being an Acme Corp employee, is entitled to 43 days of vacation per year.
-```
+### Using the application with your own decision service
 
-This answer is based on the business policies encoded within the decision service, ensuring accuracy in the interpretation of corporate rules.
+The HR example is in the `decision_services` directory. You can use:
 
+- **ODM**: XOM and RuleProject; Ruleapp is deployed to ODM and linked via `data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationDaysPerYearInput.json`.
+- **ADS**: Import `decision_services/hr_decision_service/HRDecisionService.zip`, deploy the decision service, and configure the backend for ADS (see [README_ADS.md](README_ADS.md)). Rename `data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationDaysPerYearInput.json.ads` to `data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationDaysPerYearInput.json` so the app uses it.
 
+---
 
-## Using the application 
+## Extending the Demo
 
-An HR Service example is pre-package with the application. The source for this example is provided in the ```decision_services``` directory. You can find here an ADS implementation (```decision_services/hr_decision_service/HRDecisionService.zip```) and an ODM implementation (the XOM and the RuleProject). 
+To add a custom use case, follow [README_EXTEND.md](README_EXTEND.md).
 
-By default, the corresponding Ruleapp is deployed to ODM is linked to the application with the tool descriptor ```data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationPerYearInput.json```. 
+---
 
-If you want to use the ADS version, you need to have access to an ADS service, import the ```decision_services/hr_decision_service/HRDecisionService.zip``` and deploy the decision service. You also need to set-up the backend application to use ADS: see [Setup ADS](#setup-ads) section in this Readme.
+## FAQ
 
-You then need to rename ```data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationPerYearInput.json.ads``` to ```data/hrservice/tool_descriptors/hrservice.GetNumberOfVacationPerYearInput.json``` so that the application can use it.   
+- **Docker memory issues (e.g. err 137)**  
+  Try:
+  ```bash
+  docker system prune
+  ```
 
-# Extending the demonstration with a Custom Use-Case
+- **`docker-compose` not found**  
+  Try:
+  ```bash
+  docker compose up
+  ```
+  (space instead of hyphen)
 
-Follow this [instructions](README_EXTEND.md) to add a new use-case to the application. 
+---
 
+## Author & Contact
 
-# FAQ
+**KuchikiRenji**
 
-   * If you're running into memory issue with Docker (err 137), try:
+- **Email:** [KuchikiRenji@outlook.com](mailto:KuchikiRenji@outlook.com)
+- **GitHub:** [github.com/KuchikiRenji](https://github.com/KuchikiRenji)
+- **Discord:** `kuchiki_renji`
 
-```sh
-docker system prune
-```
-   * If docker-compose is not found, try:
+---
 
-```sh
-docker compose up 
-```
-# License
-The files in this repository are licensed under the [Apache License 2.0](LICENSE).
+## License
 
-# Copyright
-© Copyright IBM Corporation 2024.
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+**Copyright** © IBM Corporation 2024.
