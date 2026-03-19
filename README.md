@@ -52,11 +52,11 @@ The chatbot frontend talks to a Python backend (rule-agent). The backend uses an
 
 **Sub-projects:**
 
-| Component | Description |
-|-----------|-------------|
-| **rule-agent** | Python backend (LangChain, Flask). Orchestrates LLM and decision service calls. |
-| **decision-services** | Sample IBM ODM and IBM ADS decision services (e.g., HR time-off rules). |
-| **chatbot-frontend** | React + TypeScript + Vite web app for the chat interface. |
+| Component             | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| **rule-agent**        | Python backend (LangChain, Flask). Orchestrates LLM and decision service calls. |
+| **decision-services** | Sample IBM ODM and IBM ADS decision services (e.g., HR time-off rules).         |
+| **chatbot-frontend**  | React + TypeScript + Vite web app for the chat interface.                       |
 
 See the READMEs inside each sub-project for details.
 
@@ -105,25 +105,30 @@ Choose one LLM option and follow the matching guide:
 
 ### Launch the Docker topology
 
-1. **Open a terminal**  
-   - Windows: run `wsl` if using WSL.  
+1. **Open a terminal**
+   - Windows: run `wsl` if using WSL.
    - macOS/Linux: use your usual terminal.
 
 2. **Log in to Docker** (avoids rate limits when pulling images):
+
    ```bash
    docker login
    ```
+
    Create a Docker account at [hub.docker.com](https://hub.docker.com/signup) if needed.
 
 3. **Build the demo**
+
    ```bash
    docker-compose build
    ```
 
 4. **Run the demo**
+
    ```bash
    docker-compose up
    ```
+
    This starts IBM ODM (for Developers) and the sample web application.
 
 5. Wait until you see `* Running on all addresses (0.0.0.0)` (or the backend is ready).
@@ -183,6 +188,7 @@ To add a custom use case, follow [README_EXTEND.md](README_EXTEND.md).
 
 - **Docker memory issues (e.g. err 137)**  
   Try:
+
   ```bash
   docker system prune
   ```
@@ -193,18 +199,6 @@ To add a custom use case, follow [README_EXTEND.md](README_EXTEND.md).
   docker compose up
   ```
   (space instead of hyphen)
-
----
-
-## Author & Contact
-
-**KuchikiRenji**
-
-- **Email:** [KuchikiRenji@outlook.com](mailto:KuchikiRenji@outlook.com)
-- **GitHub:** [github.com/KuchikiRenji](https://github.com/KuchikiRenji)
-- **Discord:** `kuchiki_renji`
-
----
 
 ## License
 
